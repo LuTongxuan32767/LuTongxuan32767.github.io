@@ -1,0 +1,51 @@
+#addFileModal{
+	margin-top: 30px;
+}
+#addFileModal #modalWrap{
+	width:500px;
+}
+#addFileModal input {
+	vertical-align: middle;
+	margin: 0;
+	padding: 0
+}
+#addFileModal .file-box2 {
+	position: relative;
+	width: 340px
+}
+#addFileModal .txt2 {
+	height: 22px;
+	border: 1px solid #cdcdcd;
+	width: 180px;
+	margin-left: 60px;
+}
+#addFileModal .btn2 {
+	background-color: #FFF;
+	border: 1px solid #CDCDCD;
+	height: 24px;
+	width: 70px;
+}
+#addFileModal .file2 {
+	left: 60px;
+	position: absolute;
+	top: 0;
+	right: 80px;
+	height: 24px;
+	filter: alpha(opacity : 0);
+	opacity: 0;
+	width: 260px
+}
+#addFileModal #fileType{
+	margin-left:45px;
+}
+#addFileModal #errorInfo{
+	color:red;
+	text-align:center;
+}
+#addFileModal #loadingId{
+	margin-top:-15px;	
+}
+#addFileModal #loadingId img{
+	margin-left:12%;
+	width:76%;
+}

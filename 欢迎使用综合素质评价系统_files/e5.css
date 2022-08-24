@@ -1,0 +1,59 @@
+/*表头*/
+.tbhead {
+	background-color: #eee;
+}
+/*工具栏*/
+.tbtoolbox {
+	
+}
+
+.toolbox {
+	text-align: right;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.toolbox button {
+	width: auto;
+	height: 23px;
+	font: 10px;
+	line-height: 23px;
+	padding: 0px;
+	margin: 0px;
+}
+/*加载框*/
+.ol {
+	 
+}
+.ol_loading_mask {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #000;
+	opacity: 0.5;
+	filter: alpha(opacity = 80);
+}
+.transparent_mask{
+	background-color: transparent;
+}
+.ol_loading {
+	width: 100%;
+	height: 60px;
+	background: url( '../img/loading.gif' );
+	background-repeat: no-repeat;
+	background-position: center center;
+	position:relative;
+	top:40%;
+	
+}
+.ol_loading_msg {
+	width: 100%;
+	height: 31px;
+	left: 0px;
+	opacity:1;
+	text-align: center;
+	margin: 10px auto 0px auto;
+}
+/*加载框结束*/

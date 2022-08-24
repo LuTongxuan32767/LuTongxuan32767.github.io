@@ -1,0 +1,13 @@
+$(function() {
+	$.ajaxSetup({
+		beforeSend : function() {
+			$("body").showLoading({zIndex:9999});
+		},
+		complete : function() {
+			$("body").hideLoading();
+		},
+		error : function(){
+			$("body").hideLoading();
+		}
+	});
+});

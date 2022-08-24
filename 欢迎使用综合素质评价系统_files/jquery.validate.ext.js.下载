@@ -1,0 +1,106 @@
+
+jQuery.validator.addMethod("isMobile", function(value, element){
+    var length = value.length;
+    return this.optional(element) || length == 11 && /^1[34578]\d{9}$/.test(value);
+},"����д��ȷ���ֻ�����");
+
+jQuery.validator.setDefaults({
+	errorElement: "label",
+	errorClass: "error",
+	validClass:"valid",
+	success: function(element) {
+		element.addClass("valid");
+	},
+	onfocusout: function(element, event) {
+		if ( !this.checkable(element) ) {
+			this.element(element);
+		}
+	} 
+});
+$.validator.prototype.startRequest =  function(element) {
+	if (!this.pending[element.name]) {
+		this.pendingRequest++;
+		this.pending[element.name] = true;
+		var label = this.errorsFor( element );
+		label.addClass("loading");
+	}
+};
+$.validator.prototype.stopRequest =  function(element, valid) {
+	this.pendingRequest--;
+	// sometimes synchronization fails, make sure pendingRequest is never < 0
+	if (this.pendingRequest < 0) {
+		this.pendingRequest = 0;
+	}
+	delete this.pending[element.name];
+	if ( valid && this.pendingRequest === 0 && this.formSubmitted && this.form() ) {
+		$(this.currentForm).submit();
+		this.formSubmitted = false;
+	} else if (!valid && this.pendingRequest === 0 && this.formSubmitted) {
+		$(this.currentForm).triggerHandler("invalid-form", [this]);
+		this.formSubmitted = false;
+	}
+	
+	var label = this.errorsFor( element );
+	label.removeClass("loading");
+};
+/**
+ * remote rewrite
+ */
+$.validator.methods.remote = function(value, element, param){
+	if(element === document.activeElement){//低版本浏览器可能不兼容，不过不会报错只不过多验证几次
+		return true;
+	}
+	if ( this.optional(element) ) {
+		return "dependency-mismatch";
+	}
+
+	var previous = this.previousValue(element);
+	if (!this.settings.messages[element.name] ) {
+		this.settings.messages[element.name] = {};
+	}
+	previous.originalMessage = this.settings.messages[element.name].remote;
+	this.settings.messages[element.name].remote = previous.message;
+
+	param = typeof param === "string" && {url:param} || param;
+
+	if ( this.pending[element.name] ) {
+		return "pending";
+	}
+	if ( previous.old === value && !element.getAttribute('group_name')) {
+		return previous.valid;
+	}
+
+	previous.old = value;
+	var validator = this;
+	this.startRequest(element);
+	var data = {};
+	data[element.name] = value;
+	$.ajax($.extend(true, {
+		url: param,
+		mode: "abort",
+		port: "validate" + element.name,
+		dataType: "json",
+		data: data,
+		success: function(response) {
+			validator.settings.messages[element.name].remote = previous.originalMessage;
+			var valid = response === true || response === "true";
+			if ( valid ) {
+				var submitted = validator.formSubmitted;
+				validator.prepareElement(element);
+				validator.formSubmitted = submitted;
+				validator.successList.push(element);
+				delete validator.invalid[element.name];
+				validator.showErrors();
+			} else {
+				var errors = {};
+				var message = response || validator.defaultMessage( element, "remote" );
+				errors[element.name] = previous.message = $.isFunction(message) ? message(value) : message;
+				validator.invalid[element.name] = true;
+				validator.showErrors(errors);
+			}
+			previous.valid = valid;
+			validator.stopRequest(element, valid);
+		}
+	}, param));
+	return "pending";
+};

@@ -1,0 +1,6 @@
+$.ajaxSetup({
+	statusCode:{401: function(){
+		//如果没有登录，则刷新本页面，跳转到登录页
+		window.location.href = window.location.href;
+	}}
+});

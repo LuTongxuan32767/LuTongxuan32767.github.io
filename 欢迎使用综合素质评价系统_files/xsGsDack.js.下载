@@ -1,0 +1,331 @@
+if (window.xsGsDack) {
+	alert("xsGsDack 冲突了！");
+} else {
+	window.xsGsDack = {};
+}
+$.extend(xsGsDack, {
+	queryGsDetail : function(xsJbxxId) {
+		$.post(xsGsDackConst.xsGsDackAjaxUrl, {
+			method : "queryXsGsNrsz",
+			xsJbxxId : xsJbxxId,
+			fbszId : jggsXsListConst.fbszId,
+
+		}, function(data) {
+			if (data) {
+			//	xsGsDackConst.xn = "";
+			//	xsGsDackConst.xq = "";
+				xsGsDack.initFlag();
+				var res = data.rows;
+				res.forEach(function(obj, idx) {
+
+					if(obj.xn ==""){
+						xsGsDackConst.xn = "";
+					}else{
+						xsGsDackConst.xn=obj.xn;
+					}
+					if(obj.xq ==""){
+						xsGsDackConst.xq = "";
+					}else{
+						xsGsDackConst.xq=obj.xq;
+					}
+					xsGsDack.setGsDaClass(obj.gsnr, obj.sfgk);
+				});
+
+				xsGsDack.setXsJbxxId(xsJbxxId);
+				/** *隐藏非公示的信息* * */
+				xsGsDack.closeHide();
+				/** *附件信息* * */
+				xsXqdaZzcl.getZzclInfo();// 佐证材料
+			}
+		}).error(function(msg) {
+			var error = eval('(' + msg.responseText + ')');
+			E5.Msg.alert(error.message);
+		});
+	},
+	initFlag : function() {
+		xsGsDackConst.jbqkFlag = true;// ------基本情况
+		xsGsDackConst.jbxxFlag = false;// 基本信息
+		xsGsDackConst.rzqkFlag = false;// 任职情况
+		xsGsDackConst.jcqkFlag = false;// 奖惩情况
+		xsGsDackConst.fzqkFlag = false;// ------发展情况
+		xsGsDackConst.sxpdFlag = false;// --思想品德
+		xsGsDackConst.dxslFlag = false;// 典型事例
+		xsGsDackConst.rccxFlag = false;// 日常操行
+		xsGsDackConst.xyspFlag = false;// --学业水平
+		xsGsDackConst.xycjFlag = false;// 学业成绩
+		xsGsDackConst.xbkcFlag = false;// 校本课程
+		xsGsDackConst.yjxxFlag = false;// 研究学习
+		xsGsDackConst.sxjkFlag = false;// --身心健康
+		xsGsDackConst.txcsFlag = false;// 体项测试
+		xsGsDackConst.tydlFlag = false;// 体育锻炼
+		xsGsDackConst.xlszFlag = false;// 心理素质
+		xsGsDackConst.yssyFlag = false;// --艺术素养
+		xsGsDackConst.shsjFlag = false;// --社会实践
+		xsGsDackConst.csbgFlag = false;// ------陈述报告
+		// $("#jbqkId").addClass("active");
+		// $("#fbqkId").removeClass("active");
+		// $("#csbgId").removeClass("active");
+		// $("#zzclId").removeClass("active");
+	},
+	setXsJbxxId : function(xsid) {
+		var xn = xsGsDackConst.xn;
+		var xq = xsGsDackConst.xq;
+		xsXqdaYssy.xsJbxxId = xsid;
+		xsXqdaShsj.xsJbxxId = xsid;
+		xsXqdaSxpd.xsJbxxId = xsid;
+		xsXqdaSxjk.xsJbxxId = xsid;
+		xsXqdaXysp.xsJbxxId = xsid;
+
+		xsXqdaXysp.xq = xq;
+		xsXqdaXysp.xn = xn;
+		xsXqdaShsj.xq = xq;
+		xsXqdaShsj.xn = xn;
+		xsXqdaYssy.xq = xq;
+		xsXqdaYssy.xn = xn;
+		xsXqdaSxjk.xq = xq;
+		xsXqdaSxjk.xn = xn;
+		xsXqdaSxpd.xq = xq;
+		xsXqdaSxpd.xn = xn;
+		xsXqdaCsbg.xq = xq;
+		xsXqdaCsbg.xn = xn;
+		xsXqdaZzcl.xq = xq;
+		xsXqdaZzcl.xn = xn;
+		
+
+		xsXqdaZzcl.xsJbxxId = xsid;
+		xsXqdaCsbg.xsJbxxId = xsid;
+		//基本信息
+		xsJbxx.xsJbxxId = xsid;
+		xsXqDackConst.xn = xn;
+		xsXqDackConst.xq = xq;
+		//任职奖惩
+		xsXqda.xsJbxxId = xsid;
+		xsXqDajbqkConst.xn = xn;
+		xsXqDajbqkConst.xq = xq;
+
+	},
+	closeHide : function() {
+		/** *基本情况* * */
+		if (xsGsDackConst.jbqkFlag) {
+			xsJbxx.queryxsJbxx();
+			if (!xsGsDackConst.jbxxFlag) {// 基本信息
+				$("#XsJbxxZs").show();
+				$("#XsJbxxKo").hide();
+			} else {
+				$("#XsJbxxZs").hide();
+				$("#XsJbxxKo").show();
+			}
+			if (!xsGsDackConst.rzqkFlag) {// 任职情况
+				$("#xsqkRzqkId").hide();
+				$("#rzqkfjId").hide();
+			} else {
+				xsXqda.queryXsXqda();
+			}
+			if (!xsGsDackConst.jcqkFlag) {// 奖惩情况
+				$("#xsqkJcqkId").hide();
+				$("#jcqkfjId").hide();
+			} else {
+				if (!xsGsDackConst.rzqkFlag) {
+					xsXqda.queryXsXqda();
+				}
+			}
+		}
+		/** *发展情况* * */
+		if (!xsGsDackConst.fzqkFlag) {
+			$("#fbqkId").hide();
+			$("#xsXqdaFzqk").hide();
+			// 附件信息
+			$("#sxpdfjId").hide();
+			$("#xyspfjId").hide();
+			$("#sxjkfjId").hide();
+			$("#yssyfjId").hide();
+			$("#shsjfjId").hide();
+		} else {
+			if (!xsGsDackConst.sxpdFlag) {// --思想品德
+				$("#sxpdId").hide();
+				$("#xsXqdaSxpd").hide();
+				// 附件信息
+				$("#sxpdfjId").hide();
+			} else {
+				if (!xsGsDackConst.dxslFlag) {// --典型事例
+					$("#dxslxxId").hide();
+					$("#sxpdfjId").hide();
+				} else {
+					xsXqdaSxpd.queryDxsl();
+				}
+				if (!xsGsDackConst.rccxFlag) {// --日常操行
+					$("#rccxxxId").hide();
+				} else {
+					xsXqdaSxpd.queryRccx();
+				}
+			}
+			if (!xsGsDackConst.xyspFlag) {// --学业水平
+				$("#xyspId").hide();
+				$("#xsXqdaXysp").hide();
+				// 附件信息
+				$("#xyspfjId").hide();
+			} else {
+				if (!xsGsDackConst.xycjFlag) {// --学业成绩
+					$("#xycjxxId").hide();
+				} else {
+					xsXqdaXysp.queryData1();// 学业水平
+				}
+				if (!xsGsDackConst.xbkcFlag) {// --校本课程
+					$("#xbkcxxId").hide();
+				} else {
+					if (!xsGsDackConst.xycjFlag) {
+						xsXqdaXysp.queryData1();//
+					}
+				}
+				if (!xsGsDackConst.yjxxFlag) {// --研究学习
+					$("#yjxxxcxcgxxId").hide();
+				} else {
+					if (!xsGsDackConst.xycjFlag && !xsGsDackConst.xbkcFlag) {
+						xsXqdaXysp.queryData1();// 学业水平
+					}
+				}
+			}
+			if (!xsGsDackConst.sxjkFlag) {// --身心健康
+				$("#xsjkId").hide();
+				$("#xsXqdaSxjk").hide();
+				// 附件信息
+				$("#sxjkfjId").hide();
+			} else {
+				if (!xsGsDackConst.txcsFlag) {// --体项测试
+					$("#tycsxxId").hide();
+				} else {
+					xsXqdaSxjk.getInfo();// 查询身心健康
+				}
+				if (!xsGsDackConst.tydlFlag) {// --体育锻炼
+					$("#rctydlxxId").hide();
+				} else {
+					if (!xsGsDackConst.txcsFlag) {
+						xsXqdaSxjk.getInfo();// 查询身心健康
+					}
+				}
+				if (!xsGsDackConst.xlszFlag) {// --心理素质
+					$("#xlszxxId").hide();
+				} else {
+					if (!xsGsDackConst.txcsFlag && !xsGsDackConst.tydlFlag) {
+						xsXqdaSxjk.getInfo();// 查询身心健康
+					}
+				}
+			}
+			if (!xsGsDackConst.yssyFlag) {// --艺术素养
+				$("#yssyId").hide();
+				$("#xsXqdaYssy").hide();
+				// 附件信息
+				$("#yssyfjId").hide();
+			} else {
+				xsXqdaYssy.queryData();// 艺术素养
+			}
+			if (!xsGsDackConst.shsjFlag) {// --社会实践
+				$("#shsjId").hide();
+				$("#xsXqdaShsj").hide();
+				// 附件信息
+				$("#shsjfjId").hide();
+			} else {
+				xsXqdaShsj.queryData();// 社会实践
+			}
+		}
+		/** 陈述报告* */
+		if (!xsGsDackConst.csbgFlag) {
+			$("#csbgId").hide();
+			$("#xsXqdaCsbg").hide();
+		} else {
+			xsXqdaCsbg.getCsbgInfo();// 陈述报告
+		}
+	},
+	setGsDaClass : function(key, val) {
+		// ------基本情况
+		if (key == "01") {// 基本信息
+			if (val == "1") {// 公示
+				xsGsDackConst.jbqkFlag = true;
+				xsGsDackConst.jbxxFlag = true;
+			}
+		}
+		if (key == "02") {// 任职情况
+			if (val == "1") {// 公示
+				xsGsDackConst.jbqkFlag = true;
+				xsGsDackConst.rzqkFlag = true;
+			}
+		}
+		if (key == "03") {// 奖惩情况
+			if (val == "1") {// 公示
+				xsGsDackConst.jbqkFlag = true;
+				xsGsDackConst.jcqkFlag = true;
+			}
+		}
+		// -----------发展情况
+		if (key == "04" // 典型事例--思想品读
+				|| key == "05" // 日常操行--思想品德
+				|| key == "06" // 学业成绩--学业水平
+				|| key == "07" // 校本课程--学业水平
+				|| key == "08" // 研究学习--学业水平
+				|| key == "09" // 体质测试--身心健康
+				|| key == "10" // 体育锻炼--身心健康
+				|| key == "11" // 心理素质--身心健康
+				|| key == "12" // 艺术素养-艺术素养
+				|| key == "13") {// 社会实践
+			if (val == 1) {
+				xsGsDackConst.fzqkFlag = true;
+				xsGsDack.setFzqkClass(key);
+			}
+		}
+		// -----------陈述报告
+		if (key == "14") {// 陈述报告
+			if (val == "1") {
+				xsGsDackConst.csbgFlag = true;
+			}
+		}
+	},
+	setFzqkClass : function(key) {
+		if (key == "04") {// 典型事例--思想品读
+			xsGsDackConst.sxpdFlag = true;
+			xsGsDackConst.dxslFlag = true;
+		}
+		if (key == "05") {// 日常操行--思想品读
+			xsGsDackConst.sxpdFlag = true;
+			xsGsDackConst.rccxFlag = true;
+		}
+		if (key == "06") {// 学业成绩--学业水平
+			xsGsDackConst.xyspFlag = true;
+			xsGsDackConst.xycjFlag = true;
+			xsXqdaXysp.isSentAjaxFlag = true;
+		}
+		if (key == "07") {// 校本课程--学业水平
+			xsGsDackConst.xyspFlag = true;
+			xsGsDackConst.xbkcFlag = true;
+			xsXqdaXysp.isSentAjaxFlag = true;
+		}
+		if (key == "08") {// 研究学习--学业水平
+			xsGsDackConst.xyspFlag = true;
+			xsGsDackConst.yjxxFlag = true;
+			xsXqdaXysp.isSentAjaxFlag = true;
+		}
+		if (key == "09") {// 体质测试--身心健康
+			xsGsDackConst.sxjkFlag = true;
+			xsGsDackConst.txcsFlag = true;
+		}
+		if (key == "10") {// 体育锻炼--身心健康
+			xsGsDackConst.sxjkFlag = true;
+			xsGsDackConst.tydlFlag = true;
+		}
+		if (key == "11") {// 心理素质--身心健康
+			xsGsDackConst.sxjkFlag = true;
+			xsGsDackConst.xlszFlag = true;
+		}
+		if (key == "12") {// 艺术素养
+			xsGsDackConst.yssyFlag = true;
+			xsXqdaYssy.isSentAjaxFlag = true;
+		}
+		if (key == "13") {// 社会实践
+			xsGsDackConst.shsjFlag = true;
+			xsXqdaShsj.isSentAjaxFlag = true;
+		}
+	}
+});
+
+$(function() {
+	xsXqDackConst.xsdack = "2";
+});
