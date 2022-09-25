@@ -1,1 +1,0 @@
-if(window.CommonDict){alert("CommonDict重复定义")}var CommonDict={};CommonDict.get=function(b,c){var d=CommonDict[b];if(!d){return""}var a=d[c];if(!a){return""}return a};CommonDict.getMap=function(a){return CommonDict[a]};
